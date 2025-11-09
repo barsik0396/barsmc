@@ -1,1 +1,4 @@
-rebot
+wget -f https://raw.githubusercontent.com/barsik0396/barsmc/main/system/core.lua /home/barsos/system/core.lua
+wget -f https://raw.githubusercontent.com/barsik0396/barsmc/main/system/ui.lua /home/barsos/system/ui.lua
+wget -f https://raw.githubusercontent.com/barsik0396/barsmc/main/apps/terminal.lua /home/barsos/apps/terminal.lua
+wget -f https://raw.githubusercontent.com/barsik0396/barsmc/main/apps/editor.lua /home/barsos/apps/editor.lua
