@@ -1,0 +1,2 @@
+# barsmc
+MC-Barsik OS
