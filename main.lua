@@ -4,6 +4,7 @@ local internet = require("internet")
 local shell = require("shell")
 local unicode = require("unicode")
 local fs = require("filesystem")
+local event = require("event")
 local gpu = component.gpu
 local screen = component.list("screen")()
 gpu.bind(screen)
@@ -49,24 +50,16 @@ local function fetchText(url)
   return result
 end
 
-local function updateMenu()
+local function restoreSystem()
   clear()
-  center(2, "Обновления MC-BarsOS", 0x00FFAA)
-  center(5, "[1] Назад")
-  center(6, "[2] Проверить обновления")
-  center(7, "[3] Восстановить систему")
-
-  while true do
-    local _, _, _, _, _, key = computer.pullSignal()
-    if key == 2 then break
-    elseif key == 3 then checkUpdates()
-    elseif key == 4 then restoreSystem()
-    end
-    updateMenu()
-  end
+  center(2, "Меню восстановления системы", 0xFFAAAA)
+  center(4, "[1] Восстановить версию 0.9.0")
+  center(5, "[2] Восстановить версию 1.0.0")
+  center(6, "[3] Назад")
+  os.sleep(3)
 end
 
-function checkUpdates()
+local function checkUpdates()
   clear()
   center(2, "Проверка обновлений...", 0xAAAAFF)
 
@@ -84,31 +77,40 @@ function checkUpdates()
     center(h // 2 + 3, "[2] Отмена")
 
     while true do
-      local _, _, _, _, _, key = computer.pullSignal()
-      if key == 2 then break
-      elseif key == 1 then
+      local _, _, _, _, key = event.pull("key_down")
+      if key == 2 then
         shell.execute("wget -f https://raw.githubusercontent.com/barsik0396/barsmc/main/ubdate.lua /home/ubdate.lua")
         fs.makeDirectory("/home/.autorun")
         fs.copy("/home/ubdate.lua", "/home/.autorun/ubdate.lua")
         computer.shutdown(true)
+      elseif key == 3 then
+        break
       end
     end
   end
 end
 
-function restoreSystem()
+local function updateMenu()
   clear()
-  center(2, "Меню восстановления системы", 0xFFAAAA)
-  center(4, "[1] Восстановить версию 0.9.0")
-  center(5, "[2] Восстановить версию 1.0.0")
-  center(6, "[3] Назад")
-  os.sleep(3)
+  center(2, "Обновления MC-BarsOS", 0x00FFAA)
+  center(5, "[1] Назад")
+  center(6, "[2] Проверить обновления")
+  center(7, "[3] Восстановить систему")
+
+  while true do
+    local _, _, _, _, key = event.pull("key_down")
+    if key == 2 then break
+    elseif key == 3 then checkUpdates()
+    elseif key == 4 then restoreSystem()
+    end
+    updateMenu()
+  end
 end
 
 drawMenu()
 
 while true do
-  local _, _, _, _, _, key = computer.pullSignal()
+  local _, _, _, _, key = event.pull("key_down")
   if key == 2 then terminal()
   elseif key == 3 then editor()
   elseif key == 4 then updateMenu()
